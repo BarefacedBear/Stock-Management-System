@@ -1,0 +1,27 @@
+{% extends 'dashboard.html' %}
+{% block subcontent %}
+  <div>
+  	<br>
+  	{% include 'includes/_messages.html' %}
+  	<table class="table table-bordered table-sm">
+	  <thead>
+	    <tr>
+	      <th scope="col">#</th>
+	      <th scope="col">Name</th>
+	      <th scope="col">Email Id</th>
+	      <th scope="col">Category</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	{% for row in customers %}
+	    <tr>
+	      <th scope="row">{{loop.index}}</th>
+	      <td>{{row.NAME}}</td>
+	      <td>{{row.EMAIL}}</td>
+	      <td>{{row.CATEGORY}}</td>
+	    </tr>
+	    {% endfor %}
+	  </tbody>
+	</table>
+  </div>
+{% endblock %}

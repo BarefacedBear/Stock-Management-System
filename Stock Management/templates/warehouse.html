@@ -1,0 +1,170 @@
+{% extends 'dashboard.html' %}
+{% block subcontent %}
+<div>
+	<br>
+  <h2 class="d-flex justify-content-center">Warehouse</h2>
+  {% include 'includes/_messages.html' %}
+  {% if session.user_type == 'C' %}
+  <a href="" class="btn btn-info btn-sm mb-2" data-toggle="modal" data-target="#add-warehouse-product">Add Product</a>
+  {% endif %}
+	<table class="table table-bordered table-sm bg-light">
+	  <thead>
+	    <tr>
+	      {% if session.user_type == 'D' %}
+	      <th scope="col">DId</th>
+	      {% elif session.user_type == 'O' %}
+	      <th scope="col">OId</th>
+	      {% else %}
+	      <th scope="col">PId</th>
+	      {% endif %}
+	      <th scope="col">Name</th>
+	      <th scope="col">Quantity</th>
+	      {% if session.user_type == 'D' or session.user_type == 'O' %}
+	      <th scope="col">Cost Price</th>
+	      <th scope="col">Sell Price</th>
+	      {% else %}
+	      <th scope="col">Price</th>
+	      {% endif %}
+	      <th></th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	{% if session.user_type == 'C' %}
+	  	{% for stock in stocks %}
+	    <tr>
+	      <th scope="row">{{stock.cpID}}</th>
+	      <td>{{stock.PRODUCT_NAME}}</td>
+	      <td>{{stock.QTY}}</td>
+	      <td>&#8377; {{stock.PRICE_PER_UNIT}}</td>
+	      <td>
+	      	<a href="/update" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#update-warehouse-product{{stock.cpID}}">Update</a>
+	      	<a href="/reject/{{stock.cpID}}" class="btn btn-danger btn-sm">Delete</a>
+	      	<div class="modal fade" id="update-warehouse-product{{stock.cpID}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Update Item - {{stock.PRODUCT_NAME}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+		<form method="POST" action="{{url_for('update')}}">
+      	<div class="modal-body">
+			<div class="form-group mx-sm-3 mb-2">
+				<input type="hidden" class="form-control" name="product_id" value="{{stock.cpID}}">
+				<input type="text" class="form-control" name="product_name" placeholder="Name" value="{{stock.PRODUCT_NAME}}">
+			</div>
+			<div class="form-group mx-sm-3 mb-2">
+				<input type="number" class="form-control" name="product_qty" placeholder="Quantity" value="{{stock.QTY}}">
+			</div>
+			<div class="form-group mx-sm-3 mb-2">
+				<input type="number" class="form-control" name="product_price" placeholder="Price" value="{{stock.PRICE_PER_UNIT}}">
+			</div>
+		</div>
+      	<div class="modal-footer">
+        	<button type="submit" class="btn btn-primary">Update</button>
+			<button type="reset" class="btn btn-danger">Reset</button>
+      	</div>
+      </form>
+    </div>
+  </div>
+</div>
+	      </td>
+	    </tr>
+	    {% endfor %}
+	    {% elif session.user_type == 'O' %}
+	    {% for stock in stocks %}
+	    <tr>
+	      <th scope="row">{{stock.opID}}</th>
+	      <td>{{stock.PRODUCT_NAME}}</td>
+	      <td>{{stock.QTY}}</td>
+	      <td>&#8377; {{stock.COST_PRICE}}</td>
+	      <td>&#8377; {{stock.SELL_PRICE}}<a href="/update" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#update-warehouse-product{{stock.opID}}" style="margin-left: 10px;">Update</a></td>
+	      <td>
+	      	<a href="/reject/{{stock.opID}}" class="btn btn-danger btn-sm">Delete</a>
+	      	<div class="modal fade" id="update-warehouse-product{{stock.opID}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="exampleModalCenterTitle">
+        	<h5>Update Sell Price Item - {{stock.PRODUCT_NAME}}</h5>
+        	<code style="color: black">(COST PRICE - &#8377; {{stock.COST_PRICE}}, QTY - {{stock.QTY}})</code>
+    	</div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+		<form method="POST" action="{{url_for('update')}}">
+      	<div class="modal-body">
+			<div class="form-group mx-sm-3 mb-2"><input type="hidden" class="form-control" name="product_id" value="{{stock.opID}}"></div>
+			<div class="form-group mx-sm-3 mb-2"><input type="number" class="form-control" name="sell_price" placeholder="Sell Price" value="{{stock.SELL_PRICE}}"></div>
+		</div>
+      	<div class="modal-footer">
+        	<button type="submit" class="btn btn-primary">Update</button>
+			<button type="reset" class="btn btn-danger">Reset</button>
+      	</div>
+      </form>
+    </div>
+  </div>
+</div>
+	      </td>
+	    </tr>
+	    {% endfor %}
+	    {% else %}
+	    {% for stock in stocks %}
+	    <tr>
+	      <th scope="row">{{stock.dpID}}</th>
+	      <td>{{stock.PRODUCT_NAME}}</td>
+	      <td>{{stock.QTY}}</td>
+	      <td>&#8377; {{stock.COST_PRICE}}</td>
+	      <td>&#8377; {{stock.SELL_PRICE}}<a href="/update" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#update-warehouse-product{{stock.dpID}}" style="margin-left: 10px;">Update</a></td>
+	      <td>
+	      	<a href="/reject/{{stock.dpID}}" class="btn btn-danger btn-sm">Delete</a>
+	      	<div class="modal fade" id="update-warehouse-product{{stock.dpID}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="exampleModalCenterTitle">
+        	<h5>Update Sell Price Item - {{stock.PRODUCT_NAME}}</h5>
+        	<code style="color: black">(COST PRICE - &#8377; {{stock.COST_PRICE}}, QTY - {{stock.QTY}})</code>
+    	</div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+		<form method="POST" action="{{url_for('update')}}">
+      	<div class="modal-body">
+			<div class="form-group mx-sm-3 mb-2"><input type="hidden" class="form-control" name="product_id" value="{{stock.dpID}}"></div>
+			<div class="form-group mx-sm-3 mb-2"><input type="number" class="form-control" name="sell_price" placeholder="Sell Price" value="{{stock.SELL_PRICE}}"></div>
+		</div>
+      	<div class="modal-footer">
+        	<button type="submit" class="btn btn-primary">Update</button>
+			<button type="reset" class="btn btn-danger">Reset</button>
+      	</div>
+      </form>
+    </div>
+  </div>
+</div>
+	      </td>
+	    </tr>
+	    {% endfor %}
+	    {% endif %}
+	  </tbody>
+	</table>
+</div>
+<div class="modal fade" id="add-warehouse-product" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Add Product</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+		<form method="POST" action="{{url_for('add_warehouse')}}">
+      	<div class="modal-body">
+			<div class="form-group mx-sm-3 mb-2"><input type="text" class="form-control" name="product_name" placeholder="Name"></div>
+			<div class="form-group mx-sm-3 mb-2"><input type="number" class="form-control" name="product_qty" placeholder="Quantity"></div>
+			<div class="form-group mx-sm-3 mb-2"><input type="number" class="form-control" name="product_price" placeholder="Price"></div>
+		</div>
+      	<div class="modal-footer">
+        	<button type="submit" class="btn btn-primary">Add</button>
+			<button type="reset" class="btn btn-danger">Reset</button>
+      	</div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

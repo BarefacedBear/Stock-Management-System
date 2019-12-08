@@ -1,0 +1,61 @@
+{% extends 'dashboard.html' %}
+{% block subcontent %}
+<div>
+	<br>
+	{% include 'includes/_messages.html' %}
+	<table class="table table-bordered table-sm bg-light">
+	  <thead>
+	    <tr>
+	      <th scope="col">PId</th>
+	      <th scope="col">Name</th>
+	      <th scope="col">Quantity</th>
+	      <th scope="col">Cost Price</th>
+	      <th scope="col">Quantity to Buy</th>
+	      <th scope="col">Set Sell Price</th>
+	      <th></th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	{% if session.user_type == 'D' %}
+	  	{% for stock in cstocks %}
+	  	<tr>
+  		  <th scope="row">{{stock.cpID}}</th>
+	      <td>{{stock.PRODUCT_NAME}}</td>
+	      <td>{{stock.QTY}}</td>
+	      <td>&#8377; {{stock.PRICE_PER_UNIT}}</td>
+	      <form method="POST" action="/buy/{{stock.cpID}}">
+	      	<td>
+	      		<div class="form-group" style="margin-bottom: 0;">
+				<input type="number" class="form-control" name="buy_amt" value="0" style="width: 70px; height: 30px;">
+			</div>
+	      </td>
+	      <td>
+	      	<input type="number" class="form-control" name="sell_price" value="0" style="width: 90px; height: 30px;">
+	      </td>
+	      <td><button type="submit" class="btn btn-success btn-sm">Buy</button></td></form>
+	  	</tr>
+	  	{% endfor %}
+	  	{% else %}
+	  	{% for stock in dstocks %}
+	  	<tr>
+  		  <th scope="row">{{stock.dpID}}</th>
+	      <td>{{stock.PRODUCT_NAME}}</td>
+	      <td>{{stock.QTY}}</td>
+	      <td>&#8377; {{stock.SELL_PRICE}}</td>
+	      <form method="POST" action="/buy/{{stock.dpID}}">
+	      	<td>
+	      		<div class="form-group" style="margin-bottom: 0;">
+				<input type="number" class="form-control" name="buy_amt" value="0" style="width: 70px; height: 30px;">
+			</div>
+	      </td>
+	      <td>
+	      	<input type="number" class="form-control" name="sell_price" value="0" style="width: 90px; height: 30px;">
+	      </td>
+	      <td><button type="submit" class="btn btn-success btn-sm">Buy</button></td></form>
+	  	</tr>
+	  	{% endfor %}
+	  	{% endif %}
+	  </tbody>
+	</table>
+</div>
+{% endblock %}
